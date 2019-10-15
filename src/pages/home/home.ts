@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController } from 'ionic-angular';
+import { Carro } from '../../modelos/carro';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { BinaryOperator } from '@angular/compiler';
 
 @Component({
   selector: 'page-home',
@@ -7,24 +10,43 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
-  public carros;
+  public carros: Carro[];
 
-  constructor(public navCtrl: NavController) {
-    this.carros = [
-        {nome:'Azera V6',preco:85000},
-        {nome:'Onix 1.6',preco:35000},
-        {nome:'Fiesta 2.0',preco:52000},
-        {nome:'C3 1.0',preco:22000},
-        {nome:'Uno Fire',preco:11000},
-        {nome:'Sentra 2.0',preco:53000},
-        {nome:'Astra Sedan',preco:39000},
-        {nome:'Vectra 2.0 Turbo',preco:37000},
-        {nome:'Hilux 4x4',preco:90000},
-        {nome:'Montana Cabine dupla',preco:57000},
-        {nome: 'Outlander 2.4',preco:99000},
-        {nome:'Brasilia Amarela',preco:9500},
-        {nome:'Omega Hatch',preco:8000}
-    ];
+  constructor(public navCtrl: NavController, 
+    private _http: HttpClient, 
+    private _loadingCtrl: LoadingController, 
+    private _alertCtrl: AlertController) {
+
+      let loading = this._loadingCtrl.create({
+        content: 'Aguarde o carregamento dos carros...'
+      });
+
+      loading.present();
+    
+    this._http.get<Carro[]>('http://localhost:8080/api/carro/listaTodosx')
+        .subscribe(
+          (carros) => {
+            this.carros = carros;
+            loading.dismiss();
+          }, 
+          (err: HttpErrorResponse) => {
+            console.log(err);
+            loading.dismiss();
+
+            this._alertCtrl.create({
+              title: 'Falha na conexao',
+              subTitle: 'Não foi possível carregar a lista de carros, tente novamente mais tarde',
+              buttons: [
+                {
+                  text: 'Ok'
+                }
+              ]
+            }).present();
+
+          }
+        );
+
+
   }
 
 }
