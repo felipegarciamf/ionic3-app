@@ -8,6 +8,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { HttpClientModule } from '@angular/common/http';
 import { CarroServiceProvider } from '../providers/carro-service/carro-service';
+import { AgendamentosServiceProvider } from '../providers/agendamentos-service/agendamentos-service';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { CarroServiceProvider } from '../providers/carro-service/carro-service';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    CarroServiceProvider
+    CarroServiceProvider,
+    AgendamentosServiceProvider
   ]
 })
 export class AppModule {}
